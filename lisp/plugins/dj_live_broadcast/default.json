@@ -1,0 +1,20 @@
+{
+    "_enabled_": true,
+    "camera_device": "",
+    "scene": "camera",
+    "logo_path": "",
+    "flyer_path": "",
+    "video_path": "",
+    "resolution": "1280x720",
+    "bitrate": "3500k",
+    "encoder": "libx264",
+    "yt_enabled": true,
+    "yt_url": "rtmp://a.rtmp.youtube.com/live2",
+    "yt_key": "",
+    "fb_enabled": false,
+    "fb_url": "rtmps://live-api-s.facebook.com:443/rtmp",
+    "fb_key": "",
+    "custom_enabled": false,
+    "custom_url": "",
+    "custom_key": ""
+}

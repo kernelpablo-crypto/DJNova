@@ -1,0 +1,19 @@
+{
+  "_type_": "MediaCue",
+  "media": {
+    "elements": {
+      "Equalizer10": {
+        "band0": -24,
+        "band1": -20,
+        "band2": -12,
+        "band3": 2,
+        "band4": 6,
+        "band5": 7,
+        "band6": 4,
+        "band7": -8,
+        "band8": -18,
+        "band9": -24
+      }
+    }
+  }
+}

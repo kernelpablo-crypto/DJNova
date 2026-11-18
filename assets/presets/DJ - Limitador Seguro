@@ -1,0 +1,13 @@
+{
+  "_type_": "MediaCue",
+  "media": {
+    "elements": {
+      "AudioDynamic": {
+        "mode": "compressor",
+        "characteristics": "soft-knee",
+        "threshold": 0.75,
+        "ratio": 0.2
+      }
+    }
+  }
+}

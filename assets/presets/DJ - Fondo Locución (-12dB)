@@ -1,0 +1,24 @@
+{
+  "_type_": "MediaCue",
+  "fadein_duration": 2.0,
+  "fadeout_duration": 2.5,
+  "media": {
+    "elements": {
+      "Volume": {
+        "volume": 0.25
+      },
+      "Equalizer10": {
+        "band0": -2,
+        "band1": -1,
+        "band2": 0,
+        "band3": -2,
+        "band4": -4,
+        "band5": -4,
+        "band6": -3,
+        "band7": -1,
+        "band8": 0,
+        "band9": 0
+      }
+    }
+  }
+}

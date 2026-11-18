@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0E1522"/>
+      <stop offset="100%" stop-color="#06090F"/>
+    </linearGradient>
+    <linearGradient id="neonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00D4FF"/>
+      <stop offset="55%" stop-color="#00B8D4"/>
+      <stop offset="100%" stop-color="#00E676"/>
+    </linearGradient>
+    <linearGradient id="warmAccent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00D4FF"/>
+      <stop offset="100%" stop-color="#00E676"/>
+    </linearGradient>
+    <radialGradient id="centerGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#00D4FF" stop-opacity="0.32"/>
+      <stop offset="65%" stop-color="#00E676" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#00D4FF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Outer Rounded App Icon Base -->
+  <rect x="20" y="20" width="472" height="472" rx="96" ry="96" fill="url(#bgGrad)" stroke="url(#neonGrad)" stroke-width="14"/>
+  <rect x="42" y="42" width="428" height="428" rx="78" ry="78" fill="none" stroke="#1A263A" stroke-width="4"/>
+
+  <!-- Subtle Aura -->
+  <circle cx="256" cy="256" r="190" fill="url(#centerGlow)"/>
+
+  <!-- Vinyl / Deck Arcs -->
+  <circle cx="256" cy="256" r="168" fill="none" stroke="#18283F" stroke-width="10"/>
+  <path d="M 110 170 A 168 168 0 0 1 342 110" fill="none" stroke="#00D4FF" stroke-width="10" stroke-linecap="round"/>
+  <path d="M 402 342 A 168 168 0 0 1 170 402" fill="none" stroke="#00E676" stroke-width="10" stroke-linecap="round"/>
+
+  <!-- Inner Groove Ring -->
+  <circle cx="256" cy="256" r="132" fill="#090E17" stroke="#223552" stroke-width="4"/>
+
+  <!-- Equalizer Sound Bars on Left/Right -->
+  <g fill="url(#warmAccent)" opacity="0.9">
+    <rect x="76" y="226" width="12" height="60" rx="6"/>
+    <rect x="98" y="202" width="12" height="108" rx="6"/>
+    <rect x="402" y="202" width="12" height="108" rx="6"/>
+    <rect x="424" y="226" width="12" height="60" rx="6"/>
+  </g>
+
+  <!-- Nova Star Spark (Top-Right of Core) -->
+  <path d="M 358 122 L 366 144 L 388 152 L 366 160 L 358 182 L 350 160 L 328 152 L 350 144 Z" fill="#FFB300"/>
+
+  <!-- Central Play / Deck Triangle -->
+  <path d="M 214 176 L 334 256 L 214 336 Z" fill="url(#neonGrad)" stroke="#E8F7FF" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M 228 202 L 304 256 L 228 310 Z" fill="#07131E" opacity="0.28"/>
+
+  <!-- Bottom Nova Wordmark Pill -->
+  <rect x="148" y="388" width="216" height="44" rx="22" fill="#0D1624" stroke="url(#neonGrad)" stroke-width="3"/>
+  <text x="256" y="418" text-anchor="middle" font-family="DejaVu Sans, Arial, sans-serif" font-weight="bold" font-size="26" letter-spacing="4" fill="#FFFFFF">DJ<tspan fill="#00E676">NOVA</tspan></text>
+</svg>

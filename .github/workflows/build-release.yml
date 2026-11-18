@@ -1,0 +1,94 @@
+name: Tests & Release Builds (Linux + Windows)
+
+on:
+  push:
+    branches: [ main, master ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  test-linux:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar dependencias de sistema
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            python3 python3-pyqt5 python3-gi gir1.2-gstreamer-1.0 \
+            gstreamer1.0-plugins-base gstreamer1.0-plugins-good \
+            python3-pytest python3-appdirs python3-sortedcontainers \
+            python3-falcon python3-mido python3-numpy python3-pil \
+            ffmpeg
+
+      - name: Instalar dependencias Python extras
+        run: pip3 install --break-system-packages qrcode python-osc python-rtmidi
+
+      - name: Ejecutar suite de pruebas DJNova
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: pytest -v tests/
+
+      - name: Empaquetar release portable Linux (.tar.gz)
+        run: |
+          mkdir -p dist/DJNova-Linux
+          cp -r lisp assets djnova.py LICENSE README.md SECURITY.md packaging dist/DJNova-Linux/
+          tar -C dist -czf dist/DJNova-Linux-x86_64.tar.gz DJNova-Linux
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: DJNova-Linux
+          path: dist/DJNova-Linux-x86_64.tar.gz
+
+  build-windows:
+    needs: test-linux
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          install: >-
+            mingw-w64-ucrt-x86_64-python
+            mingw-w64-ucrt-x86_64-python-pyqt5
+            mingw-w64-ucrt-x86_64-python-gobject
+            mingw-w64-ucrt-x86_64-gstreamer
+            mingw-w64-ucrt-x86_64-gst-plugins-base
+            mingw-w64-ucrt-x86_64-gst-plugins-good
+            mingw-w64-ucrt-x86_64-gst-plugins-bad
+            mingw-w64-ucrt-x86_64-gst-plugins-ugly
+            mingw-w64-ucrt-x86_64-gst-libav
+            mingw-w64-ucrt-x86_64-python-numpy
+            mingw-w64-ucrt-x86_64-python-pillow
+            mingw-w64-ucrt-x86_64-python-pip
+            mingw-w64-ucrt-x86_64-ffmpeg
+
+      - name: Instalar paquetes Python y PyInstaller
+        run: |
+          pip install --no-cache-dir pyinstaller appdirs sortedcontainers falcon mido python-rtmidi python-osc qrcode
+
+      - name: Compilar DJNova.exe con PyInstaller
+        run: |
+          pyinstaller --noconfirm --clean packaging/windows/djnova.spec
+
+      - name: Generar instalador DJNova-Setup-Win64.exe (Inno Setup)
+        shell: pwsh
+        run: |
+          choco install innosetup -y --no-progress
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" packaging\windows\installer.iss
+          Compress-Archive -Path dist\DJNova -DestinationPath dist\DJNova-Portable-Win64.zip -Force
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: DJNova-Windows-Win64
+          path: |
+            dist/DJNova-Setup-*.exe
+            dist/DJNova-Portable-Win64.zip

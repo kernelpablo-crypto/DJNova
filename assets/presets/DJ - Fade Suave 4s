@@ -1,0 +1,7 @@
+{
+  "_type_": "MediaCue",
+  "fadein_duration": 4.0,
+  "fadeout_duration": 4.0,
+  "fadein_type": "Quadratic",
+  "fadeout_type": "Quadratic"
+}

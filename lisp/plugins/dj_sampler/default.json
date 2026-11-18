@@ -1,0 +1,47 @@
+{
+    "_enabled_": true,
+    "show_dock": true,
+    "volume": 85,
+    "pads": [
+        {
+            "name": "Bocina DJ",
+            "path": "01_Bocina_DJ.mp3",
+            "color": "#00D4FF"
+        },
+        {
+            "name": "Aplausos",
+            "path": "02_Aplausos.mp3",
+            "color": "#00E676"
+        },
+        {
+            "name": "Redoble",
+            "path": "03_Redoble.mp3",
+            "color": "#FFB300"
+        },
+        {
+            "name": "Fanfarria",
+            "path": "04_Fanfarria.mp3",
+            "color": "#FF3EDB"
+        },
+        {
+            "name": "Scratch DJ",
+            "path": "05_Scratch_DJ.mp3",
+            "color": "#FF2A4B"
+        },
+        {
+            "name": "Risas",
+            "path": "06_Risas.mp3",
+            "color": "#4D88FF"
+        },
+        {
+            "name": "Fail Trombón",
+            "path": "07_Fail_Trombon.mp3",
+            "color": "#00E5A0"
+        },
+        {
+            "name": "Sirena FX",
+            "path": "08_Sirena_FX.mp3",
+            "color": "#FF7043"
+        }
+    ]
+}

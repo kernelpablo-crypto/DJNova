@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=DJNova
+GenericName=Consola DJ, AutoDJ y Broadcast
+Comment=Consola DJ profesional con AutoDJ, EQ 3 Bandas, Sampler FX, Radio Streaming, Escenario Video y Transmisión en Vivo
+Exec=@EXEC@ %F
+Icon=@ICON@
+Terminal=false
+Categories=AudioVideo;Audio;Mixer;Player;
+MimeType=application/x-linuxshowplayer;
+StartupWMClass=DJNova

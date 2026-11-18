@@ -1,0 +1,14 @@
+{
+    "_enabled_": true,
+    "host": "",
+    "port": 8000,
+    "mount": "/live",
+    "user": "source",
+    "password": "",
+    "format": "mp3_192",
+    "station_name": "Cabina DJNova en Vivo",
+    "genre": "DJ / Live",
+    "description": "Transmitiendo en vivo desde DJNova",
+    "auto_reconnect": true,
+    "send_metadata": true
+}

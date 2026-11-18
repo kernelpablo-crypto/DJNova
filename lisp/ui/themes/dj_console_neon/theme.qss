@@ -1,0 +1,441 @@
+
+/* ==========================================================================
+   Linux Show Player - DJ Console Neon (Pioneer / Club Mixer) Theme
+   Audio Console / DJ Mixer Styling
+   ========================================================================== */
+
+QMainWindow, QDialog {
+    background-color: #111620;
+    color: #DCE6F2;
+}
+
+QMenuBar {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #253046, stop:1 #111620);
+    border-bottom: 1px solid #2E3C54;
+    padding: 2px 4px;
+    font-weight: bold;
+}
+
+QMenuBar::item {
+    padding: 5px 10px;
+    border-radius: 4px;
+    color: #DCE6F2;
+}
+
+QMenuBar::item:selected {
+    background-color: #1D2536;
+    border: 1px solid #00D4FF;
+    color: #00D4FF;
+}
+
+QMenu {
+    background-color: #151B27;
+    border: 1px solid #0082A8;
+    border-radius: 5px;
+    padding: 4px;
+}
+
+QMenu::item {
+    padding: 6px 24px 6px 26px;
+    border-radius: 3px;
+}
+
+QMenu::item:selected {
+    background-color: #00D4FF;
+    color: #050A10;
+    font-weight: bold;
+}
+
+QStatusBar {
+    background-color: #090C11;
+    border-top: 2px solid #2E3C54;
+    color: #8A9BB5;
+    font-family: monospace;
+}
+
+QToolBar {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #1D2536, stop:1 #151B27);
+    border: 1px solid #2E3C54;
+    border-radius: 4px;
+    spacing: 6px;
+    padding: 4px;
+}
+
+QDockWidget {
+    titlebar-close-icon: none;
+    color: #00D4FF;
+    font-weight: bold;
+}
+
+QDockWidget::title {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #253046, stop:1 #151B27);
+    border: 1px solid #2E3C54;
+    border-bottom: 2px solid #0082A8;
+    padding: 5px 10px;
+    text-align: left;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+/* Hardware Console Buttons */
+QPushButton {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #273247, stop:0.5 #1C2434, stop:1 #141A26);
+    border: 1px solid #2E3C54;
+    border-top: 1px solid #44587A;
+    border-radius: 5px;
+    padding: 5px 11px;
+    color: #DCE6F2;
+    font-weight: bold;
+}
+
+QPushButton:hover {
+    border: 1px solid #00D4FF;
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #31405C, stop:1 #1C2434);
+    color: #FFFFFF;
+}
+
+QPushButton:pressed, QPushButton:checked {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #090C11, stop:1 #151B27);
+    border: 1px solid #00D4FF;
+    color: #00D4FF;
+}
+
+/* Console Tables / Cue List */
+QAbstractItemView, CueListView, RunningCuesListWidget {
+    background-color: #090C11;
+    alternate-background-color: #121824;
+    border: 1px solid #2E3C54;
+    border-radius: 5px;
+    gridline-color: #1E2738;
+    selection-background-color: #005A78;
+    selection-color: #FFFFFF;
+}
+
+CueListView:focus {
+    border: 1px solid #00D4FF;
+}
+
+QHeaderView::section, QTableView QTableCornerButton::section {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #253046, stop:1 #151B27);
+    color: #00D4FF;
+    border: none;
+    border-right: 1px solid #2E3C54;
+    border-bottom: 2px solid #0082A8;
+    padding: 5px 6px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* Group Boxes (Rack Modules) */
+QGroupBox {
+    background-color: #151B27;
+    border: 1px solid #2E3C54;
+    border-top: 2px solid #0082A8;
+    border-radius: 6px;
+    margin-top: 14px;
+    padding: 10px 8px 8px 8px;
+    font-weight: bold;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top left;
+    left: 12px;
+    padding: 1px 8px;
+    background-color: #111620;
+    border: 1px solid #0082A8;
+    border-radius: 3px;
+    color: #00D4FF;
+}
+
+/* Inputs */
+QLineEdit, QSpinBox, QDoubleSpinBox, QComboBox {
+    background-color: #090C11;
+    border: 1px solid #2E3C54;
+    border-radius: 4px;
+    padding: 4px 6px;
+    color: #FFFFFF;
+}
+
+QLineEdit:focus, QSpinBox:focus, QDoubleSpinBox:focus, QComboBox:focus {
+    border: 1px solid #00D4FF;
+}
+
+/* ==========================================================================
+   CART LAYOUT: DJ PADS & HARDWARE BANK TABS
+   ========================================================================== */
+
+#CartTabBar {
+    font-size: 11pt;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+
+#CartTabBar::tab {
+    height: 36px;
+    min-width: 110px;
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #273247, stop:1 #151B27);
+    color: #8A9BB5;
+    border: 1px solid #2E3C54;
+    border-top: 3px solid #2E3C54;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    margin-right: 4px;
+    padding: 0 12px;
+}
+
+#CartTabBar::tab:hover {
+    color: #FFFFFF;
+    border-top: 3px solid #0082A8;
+}
+
+#CartTabBar::tab:selected {
+    height: 40px;
+    margin-bottom: -4px;
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #1D2536, stop:1 #111620);
+    color: #00D4FF;
+    border: 1px solid #00D4FF;
+    border-top: 4px solid #00D4FF;
+}
+
+/* Rubberized MPC / Pioneer DJ Cue Pads */
+#ButtonCueWidget {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #263147, stop:0.15 #1A2233, stop:1 #111722);
+    border: 2px solid #2C3B54;
+    border-top: 2px solid #44587A;
+    border-radius: 8px;
+    color: #FFFFFF;
+    font-weight: bold;
+    padding: 6px;
+}
+
+#ButtonCueWidget:hover {
+    border: 2px solid #00D4FF;
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #2F4261, stop:1 #1A2233);
+}
+
+#ButtonCueWidget:pressed {
+    background-color: #090C11;
+    border: 2px solid #FF9E00;
+}
+
+#ButtonCueWidget[selected="true"] {
+    border: 2px solid #00D4FF;
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #123C52, stop:1 #111722);
+}
+
+/* ==========================================================================
+   HARDWARE MIXER FADERS (VolumeSlider & QSlider)
+   ========================================================================== */
+
+QSlider::groove:vertical, #VolumeSlider::groove:vertical {
+    background-color: #090C11;
+    border: 1px solid #2E3C54;
+    width: 6px;
+    border-radius: 3px;
+}
+
+QSlider::add-page:vertical {
+    background-color: #0082A8;
+    border: 1px solid #00D4FF;
+    width: 6px;
+    border-radius: 3px;
+}
+
+#VolumeSlider::add-page:vertical {
+    background-color: qlineargradient(x1:0, y1:1, x2:0, y2:0, stop:0 #00E676, stop:0.75 #FFB300, stop:1 #FF3D57);
+    border: none;
+    width: 6px;
+    border-radius: 3px;
+}
+
+#VolumeSlider::sub-page:vertical {
+    background-color: #090C11;
+    border-radius: 3px;
+}
+
+QSlider::handle:vertical, #VolumeSlider::handle:vertical {
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0.00 #8a929e,
+        stop:0.38 #3b4048,
+        stop:0.46 #00D4FF,
+        stop:0.54 #00D4FF,
+        stop:0.62 #3b4048,
+        stop:1.00 #7c8490
+    );
+    border: 1px solid #050608;
+    height: 18px;
+    width: 24px;
+    margin: 0 -10px;
+    border-radius: 3px;
+}
+
+QSlider::handle:vertical:hover, #VolumeSlider::handle:vertical:hover {
+    border: 1px solid #00D4FF;
+}
+
+QSlider::groove:horizontal, #VolumeSlider::groove:horizontal {
+    background-color: #090C11;
+    border: 1px solid #2E3C54;
+    height: 6px;
+    border-radius: 3px;
+}
+
+QSlider::sub-page:horizontal {
+    background-color: #00D4FF;
+    border-radius: 3px;
+}
+
+QSlider::handle:horizontal, #VolumeSlider::handle:horizontal {
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:1, y2:0,
+        stop:0.00 #8a929e,
+        stop:0.42 #3b4048,
+        stop:0.50 #00D4FF,
+        stop:0.58 #3b4048,
+        stop:1.00 #7c8490
+    );
+    border: 1px solid #050608;
+    width: 16px;
+    height: 20px;
+    margin: -8px 0;
+    border-radius: 3px;
+}
+
+/* ==========================================================================
+   RUNNING CUE STRIPS & LED TIME BARS
+   ========================================================================== */
+
+RunningCueWidget > QWidget {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #1D2536, stop:1 #151B27);
+    border: 1px solid #2E3C54;
+    border-left: 4px solid #00D4FF;
+    border-radius: 5px;
+}
+
+#ListTimeWidget {
+    height: 24px;
+    font-family: monospace;
+    font-weight: bold;
+    border-radius: 3px;
+}
+
+#ListTimeWidget[state="running"]:horizontal {
+    border: 1px solid #00E676;
+    background-color: #090C11;
+    color: #FFFFFF;
+}
+
+#ListTimeWidget[state="running"]::chunk:horizontal {
+    background-color: #00A854;
+}
+
+#ListTimeWidget[state="pause"]:horizontal {
+    border: 1px solid #FFB300;
+    background-color: #090C11;
+    color: #FFFFFF;
+}
+
+#ListTimeWidget[state="pause"]::chunk:horizontal {
+    background-color: #C78300;
+}
+
+#ListTimeWidget[state="error"]:horizontal {
+    border: 1px solid #FF3D57;
+    background-color: #090C11;
+    color: #FFFFFF;
+}
+
+#ListTimeWidget[state="error"]::chunk:horizontal {
+    background-color: #B81D33;
+}
+
+#InfoPanelDescription {
+    background-color: #090C11;
+    border: 1px solid #2E3C54;
+    border-radius: 5px;
+    padding: 4px;
+}
+
+#InfoPanelDescription[empty="false"] {
+    background-color: #151B27;
+    border: 1px solid #0082A8;
+}
+
+/* ==========================================================================
+   DJ CONSOLE DOCK PLUGIN STYLING
+   ========================================================================== */
+
+#DJConsolePanel {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #1D2536, stop:1 #090C11);
+    border: 1px solid #2E3C54;
+    border-radius: 6px;
+}
+
+#DJConsoleClock {
+    background-color: #05070A;
+    color: #00D4FF;
+    border: 2px solid #2E3C54;
+    border-radius: 5px;
+    padding: 4px 12px;
+    font-family: monospace;
+    font-size: 16pt;
+    font-weight: bold;
+}
+
+#DJConsoleBPMDisplay {
+    background-color: #05070A;
+    color: #FF9E00;
+    border: 2px solid #2E3C54;
+    border-radius: 5px;
+    padding: 4px 10px;
+    font-family: monospace;
+    font-size: 13pt;
+    font-weight: bold;
+}
+
+#DJBtnPanic {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #D93025, stop:1 #8B0000);
+    border: 1px solid #FF5252;
+    color: #FFFFFF;
+    font-weight: bold;
+    padding: 6px 12px;
+}
+
+#DJBtnPanic:hover {
+    background-color: #FF2E2E;
+}
+
+#DJBtnFadeAll {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #E67E00, stop:1 #995200);
+    border: 1px solid #FFB300;
+    color: #FFFFFF;
+    font-weight: bold;
+    padding: 6px 12px;
+}
+
+#DJBtnFadeAll:hover {
+    background-color: #FF9800;
+}
+
+#DJBtnCrossfade {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #00D4FF, stop:1 #0082A8);
+    border: 1px solid #FFFFFF;
+    color: #050A10;
+    font-weight: bold;
+    padding: 6px 12px;
+}
+
+#DJBtnTap {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #273247, stop:1 #151B27);
+    border: 2px solid #FF9E00;
+    color: #FF9E00;
+    font-weight: bold;
+    padding: 6px 12px;
+}
+
+#DJBtnTap:pressed {
+    background-color: #FF9E00;
+    color: #000000;
+}

@@ -1,0 +1,26 @@
+# Bytecode & builds
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.venv/
+venv/
+
+# Sesiones, configuraciones locales y grabaciones/descargas privadas
+*.lsp
+*.log
+*.bak
+.env
+.env.*
+djnova_*.json
+Grabaciones_*/
+Descargas_*/
+
+# Temporales / SO
+/tmp/
+.DS_Store
+Thumbs.db
+desktop.ini
