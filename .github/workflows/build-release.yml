@@ -125,6 +125,7 @@ jobs:
           install: >-
             mingw-w64-ucrt-x86_64-python
             mingw-w64-ucrt-x86_64-python-pyqt5
+            mingw-w64-ucrt-x86_64-qt5-svg
             mingw-w64-ucrt-x86_64-python-gobject
             mingw-w64-ucrt-x86_64-gstreamer
             mingw-w64-ucrt-x86_64-gst-plugins-base

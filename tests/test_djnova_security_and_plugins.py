@@ -300,3 +300,22 @@ def test_video_stage_detects_mp4_cue_and_ignores_mp3(tmp_path, qapp):
         plugin.finalize()
     finally:
         DjVideoStage.Config = orig_cfg
+
+
+def test_pyinstaller_specs_include_plugins_and_runtime_imports():
+    """Garantiza que ambos .spec incluyan lisp/plugins en datas y módulos dinámicos en hiddenimports."""
+    specs = [
+        os.path.join(ROOT, "packaging", "windows", "djnova.spec"),
+        os.path.join(ROOT, "packaging", "linux", "djnova-linux.spec"),
+    ]
+    for spec_path in specs:
+        txt = open(spec_path, encoding="utf-8").read()
+        assert 'os.path.join(ROOT, "lisp", "plugins")' in txt, f"Falta árbol lisp/plugins en {spec_path}"
+        for mod in (
+            '"PyQt5.QtSvg"',
+            '"mido.backends.rtmidi"',
+            '"gi.repository.GstController"',
+            '"gi.repository.GstPbutils"',
+            '"gi.repository.GstApp"',
+        ):
+            assert mod in txt, f"Falta hiddenimport {mod} en {spec_path}"

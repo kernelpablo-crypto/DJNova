@@ -18,14 +18,31 @@ for json_file in glob.glob(os.path.join(ROOT, "lisp", "**", "*.json"), recursive
     rel_dir = os.path.relpath(os.path.dirname(json_file), ROOT)
     datas.append((json_file, rel_dir))
 
+for dirpath, dirnames, filenames in os.walk(os.path.join(ROOT, "lisp", "plugins")):
+    dirnames[:] = [d for d in dirnames if d != "__pycache__"]
+    rel_dir = os.path.relpath(dirpath, ROOT)
+    for fn in filenames:
+        if fn.endswith((".pyc", ".json")):
+            continue
+        datas.append((os.path.join(dirpath, fn), rel_dir))
+
 hiddenimports = [
+    "PyQt5.QtSvg",
+    "PyQt5.QtXml",
     "gi",
     "gi.repository.Gst",
+    "gi.repository.GstBase",
+    "gi.repository.GstAudio",
+    "gi.repository.GstVideo",
+    "gi.repository.GstController",
     "gi.repository.GstPbutils",
+    "gi.repository.GstApp",
     "gi.repository.GLib",
     "gi.repository.GObject",
     "falcon",
     "mido",
+    "mido.backends",
+    "mido.backends.rtmidi",
     "rtmidi",
     "pythonosc",
     "qrcode",

@@ -15,18 +15,36 @@ datas = [
     (os.path.join(ROOT, "LICENSE"), "."),
 ]
 
-# Incluir default.json y módulos dinámicos de todos los plugins y elementos GStreamer
+# Incluir default.json y todo el árbol de plugins (.py, .json, etc.) para escaneo dinámico os.scandir
 for json_file in glob.glob(os.path.join(ROOT, "lisp", "**", "*.json"), recursive=True):
     rel_dir = os.path.relpath(os.path.dirname(json_file), ROOT)
     datas.append((json_file, rel_dir))
 
+for dirpath, dirnames, filenames in os.walk(os.path.join(ROOT, "lisp", "plugins")):
+    dirnames[:] = [d for d in dirnames if d != "__pycache__"]
+    rel_dir = os.path.relpath(dirpath, ROOT)
+    for fn in filenames:
+        if fn.endswith((".pyc", ".json")):
+            continue
+        datas.append((os.path.join(dirpath, fn), rel_dir))
+
 hiddenimports = [
+    "PyQt5.QtSvg",
+    "PyQt5.QtXml",
     "gi",
     "gi.repository.Gst",
+    "gi.repository.GstBase",
+    "gi.repository.GstAudio",
+    "gi.repository.GstVideo",
+    "gi.repository.GstController",
+    "gi.repository.GstPbutils",
+    "gi.repository.GstApp",
     "gi.repository.GLib",
     "gi.repository.GObject",
     "falcon",
     "mido",
+    "mido.backends",
+    "mido.backends.rtmidi",
     "rtmidi",
     "pythonosc",
     "qrcode",
@@ -36,7 +54,7 @@ hiddenimports = [
     "sortedcontainers",
 ]
 
-# Recoger dinámicamente todos los submódulos de lisp.plugins y lisp.backend
+# Recoger dinámicamente todos los submódulos de lisp.plugins
 for py_file in glob.glob(os.path.join(ROOT, "lisp", "plugins", "**", "*.py"), recursive=True):
     rel = os.path.relpath(py_file, ROOT)[:-3]
     mod = rel.replace(os.sep, ".")
@@ -45,16 +63,14 @@ for py_file in glob.glob(os.path.join(ROOT, "lisp", "plugins", "**", "*.py"), re
     if mod not in hiddenimports:
         hiddenimports.append(mod)
 
-# Si se compila en MSYS2/Windows, incluir binarios y plugins de GStreamer si existen
+# Si se compila en MSYS2/Windows, incluir ffmpeg/ffprobe junto a las DLLs del bundle
 binaries = []
 msys_prefix = os.environ.get("MINGW_PREFIX", "")
 if sys.platform == "win32" and msys_prefix and os.path.isdir(msys_prefix):
-    gst_plugins_dir = os.path.join(msys_prefix, "lib", "gstreamer-1.0")
-    if os.path.isdir(gst_plugins_dir):
-        datas.append((gst_plugins_dir, os.path.join("lib", "gstreamer-1.0")))
-    typelib_dir = os.path.join(msys_prefix, "lib", "girepository-1.0")
-    if os.path.isdir(typelib_dir):
-        datas.append((typelib_dir, os.path.join("lib", "girepository-1.0")))
+    for exe_name in ("ffmpeg.exe", "ffprobe.exe"):
+        exe_path = os.path.join(msys_prefix, "bin", exe_name)
+        if os.path.isfile(exe_path):
+            binaries.append((exe_path, "."))
 
 icon_path = os.path.join(ROOT, "assets", "logo", "djnova.ico")
 
@@ -85,7 +101,7 @@ exe = EXE(
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
-    upx=True,
+    upx=False,
     console=False,
     icon=icon_path if os.path.exists(icon_path) else None,
 )
@@ -96,7 +112,7 @@ coll = COLLECT(
     a.zipfiles,
     a.datas,
     strip=False,
-    upx=True,
+    upx=False,
     upx_exclude=[],
     name="DJNova",
 )

@@ -202,5 +202,37 @@ def main():
     sys.exit(exit_code)
 
 
+def _report_fatal_error(exc):
+    """Registra errores fatales de arranque y muestra aviso visible en GUI."""
+    import traceback
+
+    err_text = traceback.format_exc()
+    logging.critical("Error fatal al iniciar DJNova:\n%s", err_text)
+    if os.environ.get("PYTEST_CURRENT_TEST"):
+        return
+    log_file = os.path.join(app_dirs.user_log_dir, "djnova.log")
+    msg = f"No se pudo iniciar DJNova:\n{exc}\n\nRegistro:\n{log_file}"
+    if os.name == "nt":
+        try:
+            import ctypes
+
+            ctypes.windll.user32.MessageBoxW(None, msg, "DJNova - Error de inicio", 0x10)
+            return
+        except Exception:
+            pass
+    try:
+        from PyQt5.QtWidgets import QMessageBox
+
+        if QApplication.instance() is None:
+            QApplication(sys.argv[:1])
+        QMessageBox.critical(None, "DJNova - Error de inicio", msg)
+    except Exception:
+        pass
+
+
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as exc:
+        _report_fatal_error(exc)
+        sys.exit(1)

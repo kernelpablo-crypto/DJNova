@@ -17,11 +17,12 @@
 
 import json
 import logging
+import os
 from os.path import exists, dirname, abspath
 
-from PyQt5.QtWidgets import QDialog, qApp
+from PyQt5.QtWidgets import QDialog, QMessageBox, qApp
 
-from lisp import layout, __version__ as lisp_version
+from lisp import app_dirs, layout, __version__ as lisp_version
 from lisp.command.stack import CommandsStack
 from lisp.core.configuration import Configuration, DummyConfiguration
 from lisp.core.session import Session
@@ -151,10 +152,17 @@ class Application(metaclass=Singleton):
                     # If the user close the dialog, and no layout exists
                     # the application is closed
                     qApp.quit()
-        except Exception:
+        except Exception as exc:
             logger.critical(
                 translate("ApplicationError", "Startup error"), exc_info=True
             )
+            if not os.environ.get("PYTEST_CURRENT_TEST"):
+                log_file = os.path.join(app_dirs.user_log_dir, "djnova.log")
+                QMessageBox.critical(
+                    self.window,
+                    "DJNova - Error de inicio",
+                    f"No se pudo iniciar DJNova:\n{exc}\n\nRevisa el registro en:\n{log_file}",
+                )
             qApp.quit()
 
     def __new_session(self, layout):
