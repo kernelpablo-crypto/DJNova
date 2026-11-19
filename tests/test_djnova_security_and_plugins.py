@@ -232,8 +232,12 @@ def test_web_remote_pin_auth_and_xss_protection(qapp):
         DjWebRemote.Config = orig_cfg
 
 
-def test_video_stage_detects_mp4_cue_and_ignores_mp3(tmp_path):
+def test_video_stage_detects_mp4_cue_and_ignores_mp3(tmp_path, qapp):
+    import gc
+    from PyQt5.QtWidgets import QMainWindow
+    from lisp.cues.cue_model import CueModel
     from lisp.cues.media_cue import MediaCue
+    from lisp.plugins.dj_video_stage.dj_video_stage import DjVideoStage
 
     mp4 = tmp_path / "show_clip.mp4"
     mp4.write_bytes(b"fake mp4")
@@ -260,6 +264,38 @@ def test_video_stage_detects_mp4_cue_and_ignores_mp3(tmp_path):
         def input_uri(self):
             return FakeUri(self._p)
 
-    assert get_cue_video_path(MediaCue(None, FakeMedia(mp4))) == str(mp4)
-    assert get_cue_video_path(MediaCue(None, FakeMedia(mp3))) == ""
+    cue_mp4 = MediaCue(None, FakeMedia(mp4))
+    cue_mp3 = MediaCue(None, FakeMedia(mp3))
+    assert get_cue_video_path(cue_mp4) == str(mp4)
+    assert get_cue_video_path(cue_mp3) == ""
     assert get_cue_video_path(object()) == ""
+
+    # Verificar que Signal (weakref) NO pierda la conexión tras gc.collect()
+    win = QMainWindow()
+    class FakeApp:
+        window = win
+        cue_model = CueModel()
+
+    class Cfg(dict):
+        def write(self): pass
+
+    orig_cfg = DjVideoStage.Config
+    DjVideoStage.Config = Cfg({"auto_play_cue_videos": True, "videos": [], "standby_image": "", "loop_videos": False, "mute_video": False, "volume": 100})
+    triggered = []
+    try:
+        plugin = DjVideoStage(FakeApp())
+        plugin.dialog = type("FakeDlg", (), {
+            "sync_play_cue_video": lambda _s, c, p: triggered.append((c, p)),
+            "sync_pause_cue": lambda *_a: None,
+            "sync_stop_cue": lambda *_a: None,
+            "shutdown": lambda *_a: None,
+            "close": lambda *_a: None,
+        })()
+        FakeApp.cue_model.add(cue_mp4)
+        gc.collect()
+        cue_mp4.started.emit(cue_mp4)
+        qapp.processEvents()
+        assert len(triggered) == 1 and triggered[0][1] == str(mp4)
+        plugin.finalize()
+    finally:
+        DjVideoStage.Config = orig_cfg

@@ -591,19 +591,28 @@ class DjVideoStage(Plugin):
             for c in list(self.app.cue_model):
                 self._hook_cue(c)
 
+    def _emit_cue_started(self, cue):
+        self._bridge.cue_started.emit(cue)
+
+    def _emit_cue_paused(self, cue):
+        self._bridge.cue_paused.emit(cue)
+
+    def _emit_cue_stopped(self, cue):
+        self._bridge.cue_stopped.emit(cue)
+
     def _hook_cue(self, cue):
         cid = getattr(cue, "id", None)
         if not isinstance(cue, MediaCue) or cid in self._hooked_cues:
             return
         self._hooked_cues.add(cid)
         try:
-            cue.started.connect(lambda c=cue: self._bridge.cue_started.emit(c))
-            cue.paused.connect(lambda c=cue: self._bridge.cue_paused.emit(c))
-            cue.stopped.connect(lambda c=cue: self._bridge.cue_stopped.emit(c))
-            cue.end.connect(lambda c=cue: self._bridge.cue_stopped.emit(c))
-            cue.interrupted.connect(lambda c=cue: self._bridge.cue_stopped.emit(c))
+            cue.started.connect(self._emit_cue_started)
+            cue.paused.connect(self._emit_cue_paused)
+            cue.stopped.connect(self._emit_cue_stopped)
+            cue.end.connect(self._emit_cue_stopped)
+            cue.interrupted.connect(self._emit_cue_stopped)
         except Exception:
-            pass
+            logger.exception("Error conectando señales de video al cue")
 
     def _unhook_cue(self, cue):
         self._hooked_cues.discard(getattr(cue, "id", None))
