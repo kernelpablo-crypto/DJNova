@@ -40,9 +40,13 @@ Luego ejecútalo desde tu menú de aplicaciones (**DJNova**) o ejecutando `djnov
 
 ### Windows (10 / 11 — 64-bit)
 
-1. Descarga el instalador **`DJNova-Setup-1.0.0-Win64.exe`** (o `DJNova-Portable-Win64.zip`) desde la sección **Releases** de GitHub.
+- **Instalador Windows (.exe):** [Descargar DJNova-Setup-1.0.0-Win64.exe](https://github.com/kernelpablo-crypto/DJNova/releases/latest/download/DJNova-Setup-1.0.0-Win64.exe)
+- **Versión Portable (.zip):** [Descargar DJNova-Portable-Win64.zip](https://github.com/kernelpablo-crypto/DJNova/releases/latest/download/DJNova-Portable-Win64.zip)
+- **Todas las versiones y Linux `.tar.gz`:** [Ver página de Releases](https://github.com/kernelpablo-crypto/DJNova/releases/latest)
+
+1. Descarga el instalador **`DJNova-Setup-1.0.0-Win64.exe`** (o la versión portable **`.zip`**) desde el enlace de arriba.
 2. Ejecuta el instalador y abre **DJNova** desde el menú Inicio o el Escritorio.
-   *(Para descarga de YouTube, pantalla de video o streaming, asegúrate de tener `ffmpeg`, `mpv` y `yt-dlp` en tu PATH si no usas la variante portable completa).*
+   *(Para descarga de YouTube, pantalla de video o streaming, asegúrate de tener `ffmpeg`, `mpv` y `yt-dlp` en tu PATH).*
 
 ---
 
