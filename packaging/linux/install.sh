@@ -19,7 +19,8 @@ if command -v pacman >/dev/null 2>&1; then
 elif command -v apt-get >/dev/null 2>&1; then
   sudo apt-get update
   sudo apt-get install -y \
-    python3 python3-venv python3-pip python3-pyqt5 python3-gi gir1.2-gstreamer-1.0 \
+    python3 python3-venv python3-pip python3-pyqt5 python3-gi \
+    gir1.2-gstreamer-1.0 gir1.2-gst-plugins-base-1.0 \
     gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad \
     gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-pulseaudio \
     ffmpeg mpv yt-dlp qrencode python3-numpy python3-pil python3-appdirs \

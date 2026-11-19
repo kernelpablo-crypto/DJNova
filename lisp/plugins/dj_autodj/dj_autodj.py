@@ -294,7 +294,7 @@ class AutoDjWidget(QFrame):
         self.btnLoop = QPushButton("BUCLE", self)
         self.btnLoop.setCheckable(True)
         self.btnLoop.setFixedHeight(22)
-        self.btnLoop.setFixedWidth(52)
+        self.btnLoop.setFixedWidth(58)
         self.btnLoop.setToolTip("Bucle continuo: al terminar el último tema, reinicia desde el primero")
         loop_cfg = bool(self.plugin.Config.get("loop", False))
         self.btnLoop.setChecked(loop_cfg)
