@@ -1,0 +1,12 @@
+name: "Sugerir nueva función o mejora"
+description: "Propón una idea o mejora para futuras versiones de DJNova"
+title: "[Idea]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: "¿Qué mejora te gustaría ver en DJNova?"
+      placeholder: "Cuéntanos cómo ayudaría en tu cabina, radio o evento..."
+    validations:
+      required: true

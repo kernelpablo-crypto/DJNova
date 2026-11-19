@@ -8,6 +8,22 @@
   <sub>Multiplataforma (Linux & Windows) • 100% en Español • Licencia GNU GPL-3.0</sub>
 </p>
 
+<p align="center">
+  <a href="https://github.com/kernelpablo-crypto/DJNova/releases/latest">
+    <img src="https://img.shields.io/github/v/release/kernelpablo-crypto/DJNova?color=00E676&label=Descarga&style=for-the-badge" alt="Release"/>
+  </a>
+  <a href="https://github.com/kernelpablo-crypto/DJNova/actions/workflows/build-release.yml">
+    <img src="https://img.shields.io/github/actions/workflow/status/kernelpablo-crypto/DJNova/build-release.yml?branch=main&label=Build%20Linux%20%2B%20Win64&style=for-the-badge" alt="Build Status"/>
+  </a>
+  <a href="LICENSE">
+    <img src="https://img.shields.io/badge/Licencia-GPL--3.0-00D4FF?style=for-the-badge" alt="GPL-3.0"/>
+  </a>
+</p>
+
+<p align="center">
+  <img src="assets/screenshots/djnova_console.png" alt="DJNova Consola en Vivo" width="880"/>
+</p>
+
 ---
 
 ## Características Principales
@@ -64,6 +80,14 @@ Luego ejecútalo desde tu menú de aplicaciones (**DJNova**) o ejecutando `djnov
 | **`Ctrl + Y`** | Descargar audio/video de YouTube (`YT+`) |
 | **`Ctrl + Shift + E`** | Auto-Master inteligente |
 | **`Ctrl + Shift + R / V / L`** | Radio Streaming / Pantalla Escenario / Transmisión en Vivo |
+
+---
+
+## ¿Quieres ayudar a testear DJNova?
+
+¡Todas las pruebas en **Windows 10/11** y distintas distribuciones de **Linux** son bienvenidas!
+- Si encuentras algún error o algo que mejorar, abre un reporte rápido aquí: [Reportar fallo o sugerencia](https://github.com/kernelpablo-crypto/DJNova/issues/new/choose).
+- Cuéntanos qué sistema operativo usas, qué módulo probaste (audio, video `.mp4`, AutoDJ, YouTube, Streaming, Control Remoto Web) y qué ocurrió.
 
 ---
 

@@ -1,0 +1,50 @@
+name: "Reportar un fallo (Bug)"
+description: "Informa sobre un error al instalar o usar DJNova en Linux o Windows"
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: dropdown
+    id: os
+    attributes:
+      label: "Sistema Operativo"
+      options:
+        - "Windows 11 (64-bit)"
+        - "Windows 10 (64-bit)"
+        - "Arch Linux"
+        - "Ubuntu / Debian / Linux Mint"
+        - "Fedora"
+        - "Otro Linux"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: module
+    attributes:
+      label: "Módulo / Función afectada"
+      options:
+        - "Instalación o arranque inicial"
+        - "Consola DJ / Reproducción de audio"
+        - "Playlist Continua / AutoDJ"
+        - "Video / Pantalla de Escenario (mp4/mpv)"
+        - "Descargador YouTube (YT+)"
+        - "Banco Sampler FX (1-8)"
+        - "Ecualizador 3 Bandas / Auto-Master"
+        - "Control Remoto Web (QR / PIN)"
+        - "Radio Streaming / Transmisión en Vivo"
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: "¿Qué ocurrió y cómo reproducirlo?"
+      placeholder: "Describe brevemente qué estabas haciendo y qué pasó..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: "Mensaje de error o registro (opcional)"
+      description: "Si viste algún error en pantalla o en djnova.log, pégalo aquí (recuerda no incluir contraseñas ni stream keys)."
+      render: text
