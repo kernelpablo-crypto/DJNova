@@ -6,7 +6,7 @@ import socket
 import subprocess
 import time
 
-from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtCore import QObject, Qt, QTimer, pyqtSignal
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import (
     QAction,
@@ -34,11 +34,47 @@ from lisp.core.djnova_platform import (
     mpv_ipc_send,
 )
 from lisp.core.plugin import Plugin
+from lisp.cues.cue import CueState
+from lisp.cues.media_cue import MediaCue
 from lisp.ui.icons import IconTheme
 
 logger = logging.getLogger(__name__)
 
 IPC_SOCK = get_mpv_ipc_path()
+VIDEO_EXTENSIONS = {".mp4", ".mkv", ".webm", ".mov", ".avi", ".m4v", ".ts", ".flv"}
+
+
+def get_cue_video_path(cue):
+    """Devuelve la ruta local del video si el cue apunta a un archivo de video válido."""
+    if not isinstance(cue, MediaCue):
+        return ""
+    try:
+        inp = cue.media.input_uri() if hasattr(cue.media, "input_uri") else None
+        if inp is None and hasattr(cue.media, "element"):
+            uri_el = cue.media.element("UriInput")
+            if uri_el is not None and hasattr(uri_el, "input_uri"):
+                inp = uri_el.input_uri()
+        if inp is None:
+            return ""
+        path = getattr(inp, "absolute_path", None) or getattr(inp, "path", None)
+        if not path and isinstance(inp, str):
+            path = inp
+        if not path:
+            return ""
+        ext = os.path.splitext(str(path))[1].lower()
+        if ext in VIDEO_EXTENSIONS and os.path.exists(str(path)):
+            return str(path)
+    except Exception:
+        pass
+    return ""
+
+
+class VideoCueBridge(QObject):
+    """Puente seguro entre hilos de reproducción de Cues y la ventana mpv en el hilo Qt."""
+
+    cue_started = pyqtSignal(object)
+    cue_paused = pyqtSignal(object)
+    cue_stopped = pyqtSignal(object)
 
 
 def fmt_sec(val):
@@ -61,6 +97,8 @@ class VideoStageDialog(QDialog):
         self._mpv_proc = None
         self._active_file = ""
         self._blackout = False
+        self._synced_cue = None
+        self._auto_opened = False
 
         lay = QVBoxLayout(self)
         lay.setSpacing(8)
@@ -160,6 +198,13 @@ class VideoStageDialog(QDialog):
         btn_set_logo.clicked.connect(self._choose_standby_image)
         opts.addWidget(btn_set_logo)
         lay.addLayout(opts)
+
+        self.chkAutoCueVideo = QCheckBox(
+            "Abrir video automáticamente al reproducir .mp4/.mkv desde la lista manual", self
+        )
+        self.chkAutoCueVideo.setChecked(bool(self.plugin.Config.get("auto_play_cue_videos", True)))
+        self.chkAutoCueVideo.toggled.connect(self._on_auto_cue_video_toggled)
+        lay.addWidget(self.chkAutoCueVideo)
 
         # Video Playlist
         self.listWidget = QListWidget(self)
@@ -394,8 +439,85 @@ class VideoStageDialog(QDialog):
         self.plugin.Config.write()
         self._ipc("set_property", "volume", int(val))
 
+    def _on_auto_cue_video_toggled(self, checked):
+        self.plugin.Config["auto_play_cue_videos"] = bool(checked)
+        self.plugin.Config.write()
+
+    def sync_play_cue_video(self, cue, path):
+        """Abre la pantalla mpv en silencio (audio sigue en GStreamer) sincronizada con el Cue."""
+        was_closed = self._mpv_proc is None or self._mpv_proc.poll() is not None
+        if not self._ensure_stage_open():
+            return
+        if was_closed:
+            self._auto_opened = True
+
+        # Si el mismo video estaba en pausa, solo reanudar sin recargar desde 00:00
+        if not was_closed and self._synced_cue is cue and self._active_file == path:
+            self._ipc("set_property", "mute", "yes")
+            self._ipc("set_property", "pause", False)
+            try:
+                cur_ms = cue.current_time() or 0
+                if cur_ms > 200:
+                    self._ipc("seek", cur_ms / 1000.0, "absolute")
+            except Exception:
+                pass
+            return
+
+        self._synced_cue = cue
+        self._active_file = path
+        self.btnBlackout.blockSignals(True)
+        self.btnBlackout.setChecked(False)
+        self.btnBlackout.blockSignals(False)
+        self._blackout = False
+
+        # Silenciar mpv para evitar doble audio (DJNova reproduce el audio por EQ/Master)
+        self._ipc("set_property", "mute", "yes")
+        self._ipc("set_property", "vid", "auto")
+        self._ipc("set_property", "pause", False)
+        self._ipc("set_property", "loop-file", "no")
+        self._ipc("loadfile", path, "replace")
+        self.lblCurrent.setText(f"Video de Lista (Cue): ▶ {os.path.basename(path)}")
+
+        def _sync_initial_pos(c=cue):
+            if self._synced_cue is not c:
+                return
+            try:
+                cur_ms = c.current_time() or 0
+                if cur_ms > 350:
+                    self._ipc("seek", cur_ms / 1000.0, "absolute")
+            except Exception:
+                pass
+
+        QTimer.singleShot(250, _sync_initial_pos)
+
+    def sync_pause_cue(self, cue):
+        if self._synced_cue is cue and self._mpv_proc and self._mpv_proc.poll() is None:
+            self._ipc("set_property", "pause", True)
+
+    def sync_stop_cue(self, cue):
+        if self._synced_cue is not cue:
+            return
+        self._synced_cue = None
+        # Restaurar preferencia de mute del usuario para videos manuales del Escenario
+        self._ipc("set_property", "mute", "yes" if self.chkMute.isChecked() else "no")
+        standby = self.plugin.Config.get("standby_image", "")
+        if standby and os.path.exists(standby) and not self._blackout:
+            self.show_standby_image()
+            return
+
+        def _maybe_close():
+            if self._synced_cue is None and self._auto_opened:
+                self._auto_opened = False
+                self._close_stage()
+            elif self._synced_cue is None:
+                self.stop_video()
+
+        QTimer.singleShot(150, _maybe_close)
+
     def _poll_mpv(self):
         if self._mpv_proc is not None and self._mpv_proc.poll() is not None:
+            self._synced_cue = None
+            self._auto_opened = False
             self._close_stage()
             return
         if self._mpv_proc is None:
@@ -408,6 +530,19 @@ class VideoStageDialog(QDialog):
             self.lblTime.setText(f"{fmt_sec(pos)} / {fmt_sec(dur)}")
             self.progressBar.setValue(int(min(1000, max(0, (pos / dur) * 1000))))
 
+        # Mantener sincronía si el usuario adelanta/retrocede la pista en la lista
+        if (
+            self._synced_cue is not None
+            and (self._synced_cue.state & CueState.Running)
+            and isinstance(pos, (int, float))
+        ):
+            try:
+                cue_sec = (self._synced_cue.current_time() or 0) / 1000.0
+                if abs(pos - cue_sec) > 0.75:
+                    self._ipc("seek", cue_sec, "absolute")
+            except Exception:
+                pass
+
     def get_active_video_path(self):
         if self._active_file and os.path.exists(self._active_file):
             return self._active_file
@@ -418,6 +553,7 @@ class VideoStageDialog(QDialog):
 
     def shutdown(self):
         self._timer.stop()
+        self._synced_cue = None
         self._close_stage()
 
 
@@ -425,22 +561,70 @@ class DjVideoStage(Plugin):
     """Reproductor de Videos y Pantalla de Escenario / Proyector (mpv IPC)."""
 
     Name = "Video y Pantalla de Escenario (Proyector)"
-    Authors = ("Personalización Arch/LiSP",)
+    Authors = ("DJNova",)
     Description = (
         "Reproduce videos (.mp4, .mkv, .webm) y visuales DJ en bucle hacia una ventana "
-        "independiente para proyector o segundo monitor con Blackout y Logo de espera."
+        "independiente para proyector o segundo monitor, y abre automáticamente el video "
+        "cuando reproduces un archivo .mp4 desde tu lista manual."
     )
-    Version = "1.0.0"
+    Version = "1.1.0"
 
     def __init__(self, app):
         super().__init__(app)
         self.dialog = None
+        self._hooked_cues = set()
+        self._bridge = VideoCueBridge()
+        self._bridge.cue_started.connect(self._on_cue_started_ui)
+        self._bridge.cue_paused.connect(self._on_cue_paused_ui)
+        self._bridge.cue_stopped.connect(self._on_cue_stopped_ui)
+
         self.action = QAction("Video y Pantalla de Escenario... (Ctrl+Shift+V)", self.app.window.menuTools)
         self.action.triggered.connect(self.open_dialog)
         self.app.window.menuTools.addAction(self.action)
 
         self._shortcut = QShortcut(QKeySequence("Ctrl+Shift+V"), self.app.window)
         self._shortcut.activated.connect(self.open_dialog)
+
+        if hasattr(self.app, "cue_model") and self.app.cue_model is not None:
+            self.app.cue_model.item_added.connect(self._hook_cue)
+            self.app.cue_model.item_removed.connect(self._unhook_cue)
+            for c in list(self.app.cue_model):
+                self._hook_cue(c)
+
+    def _hook_cue(self, cue):
+        cid = getattr(cue, "id", None)
+        if not isinstance(cue, MediaCue) or cid in self._hooked_cues:
+            return
+        self._hooked_cues.add(cid)
+        try:
+            cue.started.connect(lambda c=cue: self._bridge.cue_started.emit(c))
+            cue.paused.connect(lambda c=cue: self._bridge.cue_paused.emit(c))
+            cue.stopped.connect(lambda c=cue: self._bridge.cue_stopped.emit(c))
+            cue.end.connect(lambda c=cue: self._bridge.cue_stopped.emit(c))
+            cue.interrupted.connect(lambda c=cue: self._bridge.cue_stopped.emit(c))
+        except Exception:
+            pass
+
+    def _unhook_cue(self, cue):
+        self._hooked_cues.discard(getattr(cue, "id", None))
+
+    def _on_cue_started_ui(self, cue):
+        if not bool(self.Config.get("auto_play_cue_videos", True)):
+            return
+        vpath = get_cue_video_path(cue)
+        if not vpath:
+            return
+        if self.dialog is None:
+            self.dialog = VideoStageDialog(self, self.app.window)
+        self.dialog.sync_play_cue_video(cue, vpath)
+
+    def _on_cue_paused_ui(self, cue):
+        if self.dialog is not None:
+            self.dialog.sync_pause_cue(cue)
+
+    def _on_cue_stopped_ui(self, cue):
+        if self.dialog is not None:
+            self.dialog.sync_stop_cue(cue)
 
     def open_dialog(self):
         if self.dialog is None:

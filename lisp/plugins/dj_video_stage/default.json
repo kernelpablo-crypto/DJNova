@@ -4,5 +4,6 @@
     "standby_image": "",
     "loop_videos": false,
     "mute_video": false,
+    "auto_play_cue_videos": true,
     "volume": 100
 }

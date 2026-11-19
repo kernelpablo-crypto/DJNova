@@ -70,11 +70,16 @@ jobs:
             mingw-w64-ucrt-x86_64-python-numpy
             mingw-w64-ucrt-x86_64-python-pillow
             mingw-w64-ucrt-x86_64-python-pip
+            mingw-w64-ucrt-x86_64-pyinstaller
+            mingw-w64-ucrt-x86_64-cmake
+            mingw-w64-ucrt-x86_64-ninja
+            mingw-w64-ucrt-x86_64-gcc
             mingw-w64-ucrt-x86_64-ffmpeg
 
       - name: Instalar paquetes Python y PyInstaller
         run: |
-          pip install --no-cache-dir pyinstaller appdirs sortedcontainers falcon mido python-rtmidi python-osc qrcode
+          pip install --break-system-packages --no-cache-dir pyinstaller appdirs sortedcontainers falcon mido python-osc qrcode
+          pip install --break-system-packages --no-cache-dir python-rtmidi || echo "python-rtmidi opcional omitido en Win64"
 
       - name: Compilar DJNova.exe con PyInstaller
         run: |

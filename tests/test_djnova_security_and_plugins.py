@@ -21,6 +21,7 @@ from lisp.core import djnova_platform as dp
 from lisp.plugins.dj_autodj.dj_autodj import AutoDjWidget
 from lisp.plugins.dj_console.dj_console import DimKeyFilter
 from lisp.plugins.dj_sampler.dj_sampler import resolve_pad_path
+from lisp.plugins.dj_video_stage.dj_video_stage import get_cue_video_path
 from lisp.plugins.dj_web_remote.dj_web_remote import DjWebRemote, REMOTE_HTML
 
 
@@ -229,3 +230,30 @@ def test_web_remote_pin_auth_and_xss_protection(qapp):
         plugin.finalize()
     finally:
         DjWebRemote.Config = orig_cfg
+
+
+def test_video_stage_detects_mp4_cue_and_ignores_mp3(tmp_path):
+    from lisp.cues.media_cue import MediaCue
+
+    mp4 = tmp_path / "show_clip.mp4"
+    mp4.write_bytes(b"fake mp4")
+    mp3 = tmp_path / "song.mp3"
+    mp3.write_bytes(b"fake mp3")
+
+    class FakeUri:
+        def __init__(self, p):
+            self.absolute_path = str(p)
+
+    class FakeMedia:
+        def __init__(self, p):
+            self._p = p
+        def input_uri(self):
+            return FakeUri(self._p)
+
+    class FakeMediaCue(MediaCue):
+        def __init__(self, p):
+            self.media = FakeMedia(p)
+
+    assert get_cue_video_path(FakeMediaCue(mp4)) == str(mp4)
+    assert get_cue_video_path(FakeMediaCue(mp3)) == ""
+    assert get_cue_video_path(object()) == ""
