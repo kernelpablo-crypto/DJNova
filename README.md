@@ -43,7 +43,20 @@
 
 ## Instalación Rápida
 
-### Linux (Arch Linux, Ubuntu/Debian, Fedora)
+### Linux Universal — AppImage o Flatpak (Ubuntu, Mint, Fedora, Debian, Arch, SteamOS)
+
+- **AppImage Portable (1 archivo, doble clic y listo):** [Descargar DJNova-x86_64.AppImage](https://github.com/kernelpablo-crypto/DJNova/releases/latest/download/DJNova-x86_64.AppImage)
+  ```bash
+  chmod +x DJNova-x86_64.AppImage
+  ./DJNova-x86_64.AppImage
+  ```
+- **Flatpak (aislado con runtime KDE + Qt):** [Descargar DJNova-x86_64.flatpak](https://github.com/kernelpablo-crypto/DJNova/releases/latest/download/DJNova-x86_64.flatpak)
+  ```bash
+  flatpak install --user ./DJNova-x86_64.flatpak
+  flatpak run io.github.kernelpablo_crypto.DJNova
+  ```
+
+### Linux desde Código Fuente / Arch AUR (`pacman`, `apt`, `dnf`)
 
 ```bash
 git clone https://github.com/kernelpablo-crypto/DJNova.git
@@ -52,7 +65,7 @@ chmod +x packaging/linux/install.sh
 ./packaging/linux/install.sh
 ```
 
-Luego ejecútalo desde tu menú de aplicaciones (**DJNova**) o ejecutando `djnova` en terminal.
+Luego ejecútalo desde tu menú de aplicaciones (**DJNova**) o ejecutando `~/.local/bin/djnova`. *(En Arch Linux también se incluye el archivo [`packaging/arch/PKGBUILD`](packaging/arch/PKGBUILD) listo para `makepkg -si`).*
 
 ### Windows (10 / 11 — 64-bit)
 

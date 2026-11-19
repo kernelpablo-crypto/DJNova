@@ -1,0 +1,52 @@
+app-id: io.github.kernelpablo_crypto.DJNova
+runtime: org.kde.Platform
+runtime-version: '5.15-24.08'
+sdk: org.kde.Sdk
+base: com.riverbankcomputing.PyQt.BaseApp
+base-version: '5.15-24.08'
+command: djnova
+cleanup-commands:
+  - /app/cleanup-BaseApp.sh
+
+finish-args:
+  - --share=ipc
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --socket=pulseaudio
+  - --share=network
+  - --device=all
+  - --filesystem=xdg-music
+  - --filesystem=xdg-videos
+  - --filesystem=xdg-desktop
+  - --talk-name=org.freedesktop.Notifications
+
+modules:
+  - name: python-deps
+    buildsystem: simple
+    build-options:
+      build-args:
+        - --share=network
+    build-commands:
+      - pip3 install --verbose --exists-action=i --no-build-isolation --prefix=${FLATPAK_DEST}
+        appdirs sortedcontainers falcon mido python-osc qrcode pillow yt-dlp numpy
+
+  - name: djnova
+    buildsystem: simple
+    build-commands:
+      - mkdir -p /app/djnova /app/bin /app/share/applications /app/share/metainfo
+      - mkdir -p /app/share/icons/hicolor/256x256/apps /app/share/icons/hicolor/scalable/apps
+      - cp -r lisp assets djnova.py LICENSE /app/djnova/
+      - |
+        cat <<'EOF' > /app/bin/djnova
+        #!/usr/bin/env bash
+        export PYTHONPATH="/app/djnova${PYTHONPATH:+:$PYTHONPATH}"
+        exec python3 /app/djnova/djnova.py "$@"
+        EOF
+      - chmod +x /app/bin/djnova
+      - cp assets/logo/djnova-256.png /app/share/icons/hicolor/256x256/apps/io.github.kernelpablo_crypto.DJNova.png
+      - cp assets/logo/djnova-logo.svg /app/share/icons/hicolor/scalable/apps/io.github.kernelpablo_crypto.DJNova.svg
+      - sed 's|@EXEC@|djnova|g; s|@ICON@|io.github.kernelpablo_crypto.DJNova|g' packaging/linux/djnova.desktop > /app/share/applications/io.github.kernelpablo_crypto.DJNova.desktop
+      - install -Dm644 packaging/flatpak/io.github.kernelpablo_crypto.DJNova.metainfo.xml /app/share/metainfo/io.github.kernelpablo_crypto.DJNova.metainfo.xml
+    sources:
+      - type: dir
+        path: ../..

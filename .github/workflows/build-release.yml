@@ -44,6 +44,71 @@ jobs:
           name: DJNova-Linux
           path: dist/DJNova-Linux-x86_64.tar.gz
 
+  build-appimage:
+    needs: test-linux
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar dependencias de sistema para AppImage
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            python3 python3-pip python3-pyqt5 python3-gi \
+            gir1.2-gstreamer-1.0 gir1.2-gst-plugins-base-1.0 \
+            libgstreamer1.0-dev gstreamer1.0-plugins-base \
+            gstreamer1.0-plugins-good gstreamer1.0-plugins-bad \
+            gstreamer1.0-plugins-ugly gstreamer1.0-libav \
+            python3-appdirs python3-sortedcontainers python3-falcon \
+            python3-mido python3-numpy python3-pil curl desktop-file-utils
+
+      - name: Instalar PyInstaller y módulos Python
+        run: pip3 install --break-system-packages --no-cache-dir pyinstaller qrcode python-osc python-rtmidi
+
+      - name: Construir DJNova-x86_64.AppImage
+        run: |
+          chmod +x packaging/linux/build-appimage.sh
+          ./packaging/linux/build-appimage.sh
+          APPIMAGE_EXTRACT_AND_RUN=1 QT_QPA_PLATFORM=offscreen ./dist/DJNova-x86_64.AppImage --help
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: DJNova-AppImage
+          path: dist/DJNova-x86_64.AppImage
+
+  build-flatpak:
+    needs: test-linux
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar flatpak y flatpak-builder
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y flatpak flatpak-builder elfutils
+
+      - name: Configurar Flathub e instalar runtime KDE + PyQt5
+        run: |
+          flatpak remote-add --if-not-exists --user flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+          flatpak install --user -y --noninteractive flathub \
+            org.kde.Platform//5.15-24.08 \
+            org.kde.Sdk//5.15-24.08 \
+            com.riverbankcomputing.PyQt.BaseApp//5.15-24.08
+
+      - name: Construir bundle DJNova-x86_64.flatpak
+        run: |
+          mkdir -p dist
+          flatpak-builder --user --force-clean --disable-rofiles-fuse \
+            --repo=flatpak-repo build-flatpak \
+            packaging/flatpak/io.github.kernelpablo_crypto.DJNova.yml
+          flatpak build-bundle flatpak-repo dist/DJNova-x86_64.flatpak \
+            io.github.kernelpablo_crypto.DJNova
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: DJNova-Flatpak
+          path: dist/DJNova-x86_64.flatpak
+
   build-windows:
     needs: test-linux
     runs-on: windows-latest
@@ -100,7 +165,7 @@ jobs:
             dist/DJNova-Portable-Win64.zip
 
   publish-release:
-    needs: [test-linux, build-windows]
+    needs: [test-linux, build-appimage, build-flatpak, build-windows]
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-24.04
     permissions:

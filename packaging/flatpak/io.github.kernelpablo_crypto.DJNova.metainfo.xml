@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.kernelpablo_crypto.DJNova</id>
+  <name>DJNova</name>
+  <summary>Consola DJ, AutoDJ sin cortes, Radio Streaming, Escenario Video y Broadcast</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+
+  <description>
+    <p>
+      DJNova es una consola profesional de cabina DJ, eventos escolares, radios online y transmisión en vivo,
+      multiplataforma y 100% en español, basada en Linux Show Player.
+    </p>
+    <ul>
+      <li>Consola DJ superior con reloj LED, grabador MP3 320 kbps, Crossfade, DIM (tecla 0) y MUTE.</li>
+      <li>Playlist Continua / AutoDJ sin cortes de silencio integrada junto al botón GO.</li>
+      <li>Ecualizador DJ de 3 bandas + KILL y Auto-Master inteligente (FFT + compresión).</li>
+      <li>Banco Sampler FX instantáneo de 8 pads (teclas 1–8 y 9 Stop) con efectos incluidos.</li>
+      <li>Descarga directa desde YouTube (audio y video HD) con apertura automática de video.</li>
+      <li>Control Remoto Web táctil desde celular/tablet protegido por PIN y código QR.</li>
+      <li>Radio Streaming (Icecast/Shoutcast), Pantalla de Escenario (proyector) y Transmisión en Vivo (YouTube/Facebook Live).</li>
+    </ul>
+  </description>
+
+  <launchable type="desktop-id">io.github.kernelpablo_crypto.DJNova.desktop</launchable>
+  <url type="homepage">https://github.com/kernelpablo-crypto/DJNova</url>
+  <url type="bugtracker">https://github.com/kernelpablo-crypto/DJNova/issues</url>
+
+  <screenshots>
+    <screenshot type="default">
+      <caption>Consola principal de DJNova con AutoDJ, EQ DJ 3B y Sampler FX</caption>
+      <image>https://raw.githubusercontent.com/kernelpablo-crypto/DJNova/main/assets/screenshots/djnova_console.png</image>
+    </screenshot>
+  </screenshots>
+
+  <releases>
+    <release version="1.0.0" date="2026-11-18">
+      <description>
+        <p>Lanzamiento inicial de DJNova 1.0.0 multiplataforma (Linux y Windows).</p>
+      </description>
+    </release>
+  </releases>
+
+  <content_rating type="oars-1.1" />
+</component>

@@ -1,0 +1,56 @@
+# Maintainer: kernelpablo-crypto <kernel.pablo@gmail.com>
+pkgname=djnova
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Consola DJ, AutoDJ sin cortes, Radio Streaming, Escenario Video y Broadcast (basado en Linux Show Player)"
+arch=('any')
+url="https://github.com/kernelpablo-crypto/DJNova"
+license=('GPL-3.0-or-later')
+depends=(
+  'python'
+  'python-pyqt5'
+  'python-gobject'
+  'gstreamer'
+  'gst-plugins-base'
+  'gst-plugins-good'
+  'gst-plugins-bad'
+  'gst-plugins-ugly'
+  'gst-libav'
+  'python-appdirs'
+  'python-sortedcontainers'
+  'python-falcon'
+  'python-mido'
+  'python-rtmidi'
+  'python-numpy'
+  'python-pillow'
+  'ffmpeg'
+  'mpv'
+  'yt-dlp'
+  'qrencode'
+)
+optdepends=(
+  'qpwgraph: matriz de ruteo visual PipeWire/JACK'
+  'python-qrcode: generación nativa de QR sin binario externo'
+  'python-osc: soporte de salida/entrada OSC'
+)
+source=("$pkgname-$pkgver.tar.gz::https://github.com/kernelpablo-crypto/DJNova/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('SKIP')
+
+package() {
+  cd "$srcdir/DJNova-$pkgver"
+
+  install -dm755 "$pkgdir/usr/share/djnova" "$pkgdir/usr/bin"
+  cp -a lisp assets djnova.py LICENSE "$pkgdir/usr/share/djnova/"
+
+  cat > "$pkgdir/usr/bin/djnova" <<'EOF'
+#!/usr/bin/env bash
+exec python3 /usr/share/djnova/djnova.py "$@"
+EOF
+  chmod 755 "$pkgdir/usr/bin/djnova"
+
+  install -Dm644 assets/logo/djnova-256.png "$pkgdir/usr/share/icons/hicolor/256x256/apps/djnova.png"
+  install -Dm644 assets/logo/djnova-logo.svg "$pkgdir/usr/share/icons/hicolor/scalable/apps/djnova.svg"
+  sed 's|@EXEC@|/usr/bin/djnova|g; s|@ICON@|djnova|g' packaging/linux/djnova.desktop > "$srcdir/djnova.desktop"
+  install -Dm644 "$srcdir/djnova.desktop" "$pkgdir/usr/share/applications/djnova.desktop"
+  install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}
