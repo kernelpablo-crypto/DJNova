@@ -272,6 +272,7 @@ def test_video_stage_detects_mp4_cue_and_ignores_mp3(tmp_path, qapp):
 
     # Verificar que Signal (weakref) NO pierda la conexión tras gc.collect()
     win = QMainWindow()
+    win.menuTools = win.menuBar().addMenu("Tools")
     class FakeApp:
         window = win
         cue_model = CueModel()
