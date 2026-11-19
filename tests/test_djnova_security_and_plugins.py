@@ -244,16 +244,22 @@ def test_video_stage_detects_mp4_cue_and_ignores_mp3(tmp_path):
         def __init__(self, p):
             self.absolute_path = str(p)
 
+    class FakeSig:
+        def connect(self, *_): pass
+
     class FakeMedia:
+        elements_changed = FakeSig()
+        error = FakeSig()
+        eos = FakeSig()
         def __init__(self, p):
             self._p = p
+        def changed(self, _):
+            return FakeSig()
+        def element(self, _):
+            return None
         def input_uri(self):
             return FakeUri(self._p)
 
-    class FakeMediaCue(MediaCue):
-        def __init__(self, p):
-            self.media = FakeMedia(p)
-
-    assert get_cue_video_path(FakeMediaCue(mp4)) == str(mp4)
-    assert get_cue_video_path(FakeMediaCue(mp3)) == ""
+    assert get_cue_video_path(MediaCue(None, FakeMedia(mp4))) == str(mp4)
+    assert get_cue_video_path(MediaCue(None, FakeMedia(mp3))) == ""
     assert get_cue_video_path(object()) == ""
